@@ -247,6 +247,7 @@ def plot_rt(result, ax,fig, state_name):
     ax.set_ylim(0.0,3.5)
     ax.set_xlim(pd.Timestamp('2020-03-01'), result.index.get_level_values('date')[-1]+pd.Timedelta(days=1))
     fig.set_facecolor('w')
+    fig.autofmt_xdate()
     
 
 def analyze_all(states):
@@ -314,7 +315,11 @@ def plot_smoothed(original, smoothed, state_name):
 
     ax = smoothed.plot(label='Smoothed',
                    legend=True)
+    
+    fig = plt.figure()
+
     ax.get_figure().set_facecolor('w')
+    fig.autofmt_xdate()
     plt.savefig("plot/" + state_name + "_new_cases_per_day.png")
     plt.close()
 
@@ -342,6 +347,7 @@ def plot_hdis(result, state_name):
     ax.set_ylim(.5,3.5)
     ax.xaxis.set_major_locator(mdates.WeekdayLocator())
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    fig.autofmt_xdate()
     plt.savefig("plot/" + state_name + "_hdis.png")
     plt.close()
 
@@ -463,7 +469,7 @@ def main():
     # Acquire data
     # Save as cvs
     today = date.today()
-    file_name = "Covid-19-Brasil_" + str(today) + ".csv"
+    file_name = "data/Covid-19-Brasil_" + str(today) + ".csv"
     if os.path.isfile(file_name):
         print ("File exist")
     else:
