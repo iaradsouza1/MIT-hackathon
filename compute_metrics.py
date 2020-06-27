@@ -80,6 +80,9 @@ def load_data(file_name):
     raw_states_df.drop(['last_available_confirmed'],axis=1, inplace=True)
     raw_states_df.dropna(inplace=True)
     raw_states_df.drop(['city'],axis=1, inplace=True)
+
+    if not os.path.isdir("./metrics"):
+        os.mkdir("./metrics")
     
     raw_states_df.to_pickle("metrics/raw_states_df.pkl")
     return raw_states_df
@@ -305,6 +308,9 @@ def plot_smoothed(original, smoothed, state_name):
                label='Actual',
                legend=True,
              figsize=(600/72, 400/72))
+
+    if not os.path.isdir("./plot"):
+        os.mkdir("./plot")
 
     ax = smoothed.plot(label='Smoothed',
                    legend=True)
