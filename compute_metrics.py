@@ -464,7 +464,7 @@ def main():
     # Acquire data
     # Save as cvs
     today = date.today()
-    file_name = "Covid-19-Brasil_" + str(today) + ".csv"
+    file_name = "data/Covid-19-Brasil_" + str(today) + ".csv"
     if os.path.isfile(file_name):
         print ("File exist")
     else:
