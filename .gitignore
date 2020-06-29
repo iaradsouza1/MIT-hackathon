@@ -5,6 +5,7 @@ Untitled.ipynb
 # Data
 data/*.cvs
 data/*.csv
-metrics/*.pkl
+metrics/
 plot/*.png
-
+test_plots.ipynb
+results.pkl
