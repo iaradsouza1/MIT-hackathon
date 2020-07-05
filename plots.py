@@ -10,7 +10,7 @@ import streamlit as st
 
 from datetime import date
 
-@st.cache
+@st.cache(suppress_st_warning=True)
 def pickle_to_df(results_pkl, geojson):
     
     # Read 'results.pkl' file
@@ -174,4 +174,3 @@ def plot_rt_state(state, df_results):
 
     return(fig)
 
-#def show_bars():
