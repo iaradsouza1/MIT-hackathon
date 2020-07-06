@@ -221,12 +221,3 @@ def bar_plots(df_results, date):
     fig.update_yaxes(showgrid=True, gridcolor='rgb(215,215,215)', )
     
     return(fig)
-
-# def main():
-
-#     df_results = pickle_to_df('results.pkl', 'data/brasil_estados.geojson')
-#     fig = bar_plots(df_results, date='2020-05-04')
-#     fig.show()
-
-# if __name__ == "__main__":
-#     main()
