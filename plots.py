@@ -68,7 +68,9 @@ def plot_map(df_results, date, geojson):
     
     return(fig)
 
-def plot_new_cases(state):
+def plot_new_cases(state, date):
+
+    last_day = pd.to_datetime(date)
 
     original_path =  'metrics/' + str(state) + '_original.pkl'
     smoothed_path = 'metrics/' + str(state) + '_smoothed.pkl'
@@ -81,6 +83,8 @@ def plot_new_cases(state):
         'cases': df_original.xs(state, level='state').values,
         'smoothed': df_smoothed.xs(state, level='state').values
     })
+
+    df = df[ df.date.le(last_day) ]
 
     fig = go.Figure()
 
@@ -116,9 +120,11 @@ def plot_new_cases(state):
     return(fig)
 
 
-def plot_rt_state(state, df_results):
+def plot_rt_state(state, df_results, date):
 
-    df_tmp = df_results[ df_results.state.eq(state) ]
+    last_day = pd.to_datetime(date)
+
+    df_tmp = df_results[ (df_results.state == state) & ( df_results.date <= last_day) ]
 
     upper = go.Scatter(
         name = 'Upper bound',
@@ -174,3 +180,53 @@ def plot_rt_state(state, df_results):
 
     return(fig)
 
+def bar_plots(df_results, date):
+
+    today = pd.to_datetime(date)
+    df_tmp = df_results[ df_results.date.eq(today)  ].sort_values('ML')
+    err = df_tmp[['Low', 'High']].sub(df_tmp['ML'], axis=0).abs().values.T
+
+    conditions = [df_tmp.High.le(1.1).values, df_tmp.Low.ge(1.05).values]
+    choices = ['Undercontrol', 'Not undercontrol']
+
+    df_tmp['Situation'] = np.select(conditions, choices, default='Undefined')
+    
+    fig = px.bar(df_tmp,
+                x = 'state', 
+                y = 'ML',
+                error_y = err[1],
+                error_y_minus = err[0],
+                color=df_tmp.Situation,
+                color_discrete_map = {
+                    'Undercontrol':'rgb(145,140,255)',
+                    'Not undercontrol': 'rgb(179,35,14)',
+                    'Undefined':'rgb(245,115,70)'
+                }
+            )
+
+    fig.add_shape(
+        type="line",
+        x0=df_tmp.state.values[0],
+        y0=1,
+        x1=df_tmp.state.values[len(df_tmp.state.values)-1],
+        y1=1,
+        line=dict(color= 'rgb(130,130,130)',
+                dash='dot',
+                width=2)
+        
+    )
+
+    fig.update_xaxes(categoryorder='total ascending',showgrid=True, gridcolor='rgb(215,215,215)')
+    fig.update_layout(plot_bgcolor='white')
+    fig.update_yaxes(showgrid=True, gridcolor='rgb(215,215,215)', )
+    
+    return(fig)
+
+# def main():
+
+#     df_results = pickle_to_df('results.pkl', 'data/brasil_estados.geojson')
+#     fig = bar_plots(df_results, date='2020-05-04')
+#     fig.show()
+
+# if __name__ == "__main__":
+#     main()
